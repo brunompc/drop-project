@@ -502,6 +502,24 @@ class ReportControllerTests {
                 "testFuncaoParaTestarQueNaoApareceAosAlunos:TestTeacherHiddenProject->0"))
     }
 
+    @Test
+    @DirtiesContext
+    fun testCenas() {
+        testsHelper.uploadProject(this.mvc, "projectJUnitErrors", defaultAssignmentId, STUDENT_1)
+        testsHelper.uploadProject(this.mvc,"projectJUnitErrors", defaultAssignmentId, STUDENT_2,
+                authors = listOf(STUDENT_2.username to "Student 2"))
+
+        val reportResult = this.mvc.perform(get("/cenas/${defaultAssignmentId}")
+                .with(user(TEACHER_1)))
+                .andExpect(status().isOk())
+                .andReturn()
+
+        @Suppress("UNCHECKED_CAST")
+        val tests = reportResult.modelAndView.modelMap["similarGroups"]
+
+        print("Cena:" + tests)
+    }
+
     private fun testDataForGroupGroupsByFailures(): List<ProjectGroup> {
         val g1 = ProjectGroup(1)
         g1.authors.add(Author(1, "BC", "BC"))
